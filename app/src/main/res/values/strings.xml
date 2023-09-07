@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name" translatable="false">Bingo</string>
+    <string name="chooseMode">選擇模式</string>
+    <string name="toGameMode">遊戲</string>
+    <string name="toInputMode">輸入</string>
+    <string name="inputMode">輸入模式</string>
+    <string name="inputNum">數字範圍：</string>
+    <string name="randomNum">亂數</string>
+    <string name="rowsNum">行數：</string>
+    <string name="inputNumError">範圍格式錯誤！</string>
+    <string name="changeColor">按鈕顏色</string>
+    <string name="modeError">模式錯誤！</string>
+</resources>

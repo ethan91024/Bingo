@@ -1,0 +1,12 @@
+<resources>
+    <string name="chooseMode">Mode</string>
+    <string name="toGameMode">Game</string>
+    <string name="toInputMode">Input</string>
+    <string name="inputMode">Input Mode</string>
+    <string name="inputNum">Range:</string>
+    <string name="randomNum">Random</string>
+    <string name="rowsNum">Rows:</string>
+    <string name="inputNumError">Range format error!</string>
+    <string name="changeColor">Button color</string>
+    <string name="modeError">Wrong mode!</string>
+</resources>

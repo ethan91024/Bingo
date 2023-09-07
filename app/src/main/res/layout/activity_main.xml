@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingTop="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="15dp"
+    tools:context=".ui.MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvChooseMode"
+            android:layout_width="154dp"
+            android:layout_height="match_parent"
+            android:text="@string/chooseMode"
+            android:textColor="#A9000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvInputMode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/inputMode"
+            android:textColor="#A9000000"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvToGameMode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:text="@string/toGameMode"
+            android:textColor="#00BCD4"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switchMode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:checked="true"
+            android:gravity="center"
+            android:scaleX="1.25"
+            android:scaleY="1.25" />
+
+        <TextView
+            android:id="@+id/tvToInputMode"
+            android:layout_width="42dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/toInputMode"
+            android:textColor="#00BCD4"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvInputNum"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|right"
+            android:text="@string/inputNum" />
+
+        <EditText
+            android:id="@+id/etNumRange"
+            android:layout_width="66dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:inputType="text"
+            android:maxLength="7"
+            android:text="1-30" />
+
+        <Button
+            android:id="@+id/btnRandom"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:text="@string/randomNum"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/rgChangeColor"
+            android:layout_width="176dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtnRed"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:buttonTint="@color/red"
+                android:scaleX="1.25"
+                android:scaleY="1.25" />
+
+            <RadioButton
+                android:id="@+id/rbtnOrange"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:buttonTint="@color/orange"
+                android:scaleX="1.25"
+                android:scaleY="1.25" />
+
+            <RadioButton
+                android:id="@+id/rbtnGreen"
+                android:layout_width="36dp"
+                android:layout_height="match_parent"
+                android:buttonTint="@color/green"
+                android:scaleX="1.25"
+                android:scaleY="1.25" />
+
+            <RadioButton
+                android:id="@+id/rbtnPurple"
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple_500"
+                android:checked="true"
+                android:scaleX="1.25"
+                android:scaleY="1.25" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tvInputRows"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|right"
+            android:text="@string/rowsNum" />
+
+        <EditText
+            android:id="@+id/etRowRange"
+            android:layout_width="67dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:text="3" />
+
+        <ImageView
+            android:id="@+id/ivRowsCheck"
+            android:layout_width="96dp"
+            android:layout_height="37dp"
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/baseline_check_box_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TableLayout
+            android:id="@+id/bingoTable"
+            android:layout_width="383dp"
+            android:layout_height="383dp" />
+    </LinearLayout>
+
+</LinearLayout>
