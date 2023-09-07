@@ -10,4 +10,5 @@
     <string name="inputNumError">範圍格式錯誤！</string>
     <string name="changeColor">按鈕顏色</string>
     <string name="modeError">模式錯誤！</string>
+    <string name="numberExists">數字已存在！</string>
 </resources>

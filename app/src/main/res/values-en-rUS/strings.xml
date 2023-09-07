@@ -9,4 +9,5 @@
     <string name="inputNumError">Range format error!</string>
     <string name="changeColor">Button color</string>
     <string name="modeError">Wrong mode!</string>
+    <string name="numberExists">Number already exists!</string>
 </resources>

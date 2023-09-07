@@ -179,12 +179,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="35dp"
         android:orientation="horizontal">
 
         <TableLayout
             android:id="@+id/bingoTable"
             android:layout_width="383dp"
-            android:layout_height="383dp" />
+            android:layout_height="383dp"
+            android:background="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

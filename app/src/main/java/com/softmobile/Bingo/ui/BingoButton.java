@@ -8,14 +8,13 @@ public class BingoButton {
     private boolean m_bButtonClicked = false;//true就是被按了
     private int m_iButtonNum = 0;//儲存按鈕的數字
 
-    public BingoButton(Button btnButton, EditText etButton,int iTag) {
-        m_etButton=etButton;
+    public BingoButton(EditText etButton, int iTag) {
+        m_etButton = etButton;
         m_etButton.setTag(iTag);
     }
 
-    public EditText getEditTextButton(){
-        return m_etButton;
-    }
+    public EditText getEditTextButton() {return m_etButton;}
+
     public boolean getButtonClicked() {
         return m_bButtonClicked;
     }
@@ -27,4 +26,6 @@ public class BingoButton {
     public void setButtonNum(int number) {
         m_iButtonNum = number;
     }
+
+    public int getButtonNum() {return m_iButtonNum;}
 }
