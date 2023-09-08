@@ -11,4 +11,8 @@
     <string name="changeColor">按鈕顏色</string>
     <string name="modeError">模式錯誤！</string>
     <string name="numberExists">數字已存在！</string>
+    <string name="inputEmpty">輸入為空</string>
+    <string name="zeroNum">不可為0!</string>
+    <string name="bingoLines">目前連線數：</string>
+
 </resources>

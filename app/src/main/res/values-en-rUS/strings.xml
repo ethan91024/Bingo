@@ -10,4 +10,7 @@
     <string name="changeColor">Button color</string>
     <string name="modeError">Wrong mode!</string>
     <string name="numberExists">Number already exists!</string>
+    <string name="inputEmpty">Input empty!</string>
+    <string name="zeroNum">Cannot input 0!</string>
+    <string name="bingoLines">Bingo Lines:</string>
 </resources>
