@@ -15,5 +15,10 @@
     <string name="bingoLines">Bingo Lines:</string>
     <string name="outOfRange">Out Of Range!</string>
     <string name="bingoNotCompleted">Imcomplete Bingo Card!</string>
+    <string name="dialogTitle1">Bingo Completed!</string>
+    <string name="dialogTitle2">Switch to Input Mode</string>
+    <string name="dialogContent2">Bingo will be recreated after being confirmed!</string>
+    <string name="dialogConfirm">Confirm</string>
+    <string name="dialogCancel">Cancel</string>
 
 </resources>

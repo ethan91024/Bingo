@@ -94,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
             if (m_binding.switchMode.isChecked()) {
                 //變為輸入模式
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("切換至輸入模式");
-                builder.setMessage("確定後Bingo將被復原！");
-                builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.dialogTitle2);
+                builder.setMessage(R.string.dialogContent2);
+                builder.setPositiveButton(R.string.dialogConfirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_iMode = 1;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         modeSettings();
                     }
                 });
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.dialogCancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_binding.switchMode.setChecked(false);
@@ -414,8 +414,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean checkGameOver() {
         if (m_iBingoLines >= m_iRows) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("完成Bingo!");
-            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.dialogTitle1);
+            builder.setPositiveButton(R.string.dialogConfirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

@@ -15,7 +15,12 @@
     <string name="zeroNum">不可為0!</string>
     <string name="bingoLines">目前連線數：</string>
     <string name="outOfRange">超出範圍！</string>
-    <string name="bingoNotCompleted">賓果盤不完整!</string>
+    <string name="bingoNotCompleted">賓果盤不完整！</string>
+    <string name="dialogTitle1">完成Bingo!</string>
+    <string name="dialogTitle2">切換至輸入模式</string>
+    <string name="dialogContent2">確定後Bingo將被復原！</string>
+    <string name="dialogConfirm">確定</string>
+    <string name="dialogCancel">取消</string>
 
 
 </resources>
