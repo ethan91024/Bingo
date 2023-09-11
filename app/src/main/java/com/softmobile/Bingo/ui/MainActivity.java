@@ -71,46 +71,83 @@ public class MainActivity extends AppCompatActivity {
         setContentView(vBinding);
 
         m_iColor = getResources().getColor(R.color.purple_500);
+        m_binding.tvBingoLines.setText(getResources()
+                .getString(R.string.bingoLines) + m_iBingoLines);
 
         //判斷當前模式為何
-        m_binding.switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (m_binding.switchMode.isChecked()) {
-                    //變為輸入模式
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle("切換至輸入模式");
-                    builder.setMessage("確定後Bingo將被復原！");
-                    builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            m_iMode = 1;
-                            m_iBingoLines = 0;
-                            modeSettings();
-                        }
-                    });
-                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            m_binding.switchMode.setChecked(false);
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                } else if (!m_binding.switchMode.isChecked()) {
-                    //變為遊戲模式
-                    m_iMode = 0;
-                    modeSettings();
-                }
-            }
-        });
-
+        m_binding.switchMode.setOnCheckedChangeListener(compoundBtnCheckedListener);
+        //radioGroup換顏色
+        m_binding.rgChangeColor.setOnCheckedChangeListener(rgCheckedChangeListener);
         //偵測數字範圍改變
-        m_binding.etNumRange.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                //按下確認鍵或是(鍵盤事件不為null,鍵盤事件為按下,按下鍵為ENTER)
+        m_binding.etNumRange.setOnEditorActionListener(etActionListener);
+        //偵測行數改變
+        m_binding.etRowRange.setOnEditorActionListener(etActionListener);
+        //產生亂數
+        m_binding.btnRandom.setOnClickListener(onClickListener);
+        //改變賓果的行列數量，加入按鈕及相關設定
+        m_binding.ivRowsCheck.setOnClickListener(onClickListener);
+    }
+
+    private final CompoundButton.OnCheckedChangeListener compoundBtnCheckedListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            if (m_binding.switchMode.isChecked()) {
+                //變為輸入模式
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("切換至輸入模式");
+                builder.setMessage("確定後Bingo將被復原！");
+                builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_iMode = 1;
+                        m_iBingoLines = 0;
+                        modeSettings();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_binding.switchMode.setChecked(false);
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            } else if (!m_binding.switchMode.isChecked()) {
+                //變為遊戲模式
+                m_iMode = 0;
+                modeSettings();
+            }
+        }
+
+    };
+
+    private final RadioGroup.OnCheckedChangeListener rgCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            // 在这里处理RadioButton的变化事件
+            if (checkedId == R.id.rbtnRed) {
+                m_iColor = getResources().getColor(R.color.red);
+            } else if (checkedId == R.id.rbtnOrange) {
+                m_iColor = getResources().getColor(R.color.orange);
+            } else if (checkedId == R.id.rbtnGreen) {
+                m_iColor = getResources().getColor(R.color.green);
+            } else if (checkedId == R.id.rbtnPurple) {
+                m_iColor = getResources().getColor(R.color.purple_500);
+            }
+            for (int j = 0; j < m_alBingoButton.size(); j++) {
+                m_alBingoButton.get(j).setButtonClicked(false);
+                m_alBingoButton.get(j).getEditTextButton().setBackgroundColor(m_iColor);
+            }
+        }
+    };
+
+    private final EditText.OnEditorActionListener etActionListener = new TextView.OnEditorActionListener() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            int viewId = textView.getId();
+            if (viewId == m_binding.etNumRange.getId()) {
                 if (i == EditorInfo.IME_ACTION_DONE ||
                         (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
                                 keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -118,14 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     hideKeyboard(MainActivity.this, vBinding);
                     return true;
                 }
-                return false;
-            }
-        });
-
-        //偵測行數改變
-        m_binding.etRowRange.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            } else if (viewId == m_binding.etRowRange.getId()) {
                 //按下確認鍵或是(鍵盤事件不為null,鍵盤事件為按下,按下鍵為ENTER)
                 if (i == EditorInfo.IME_ACTION_DONE ||
                         (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
@@ -142,22 +172,68 @@ public class MainActivity extends AppCompatActivity {
                             toastMsg(R.string.zeroNum);
                         }
                     } else {
+                        Log.d("0", "144");
                         toastMsg(R.string.inputEmpty);
                     }
                     hideKeyboard(MainActivity.this, vBinding);
                     return true;
                 }
-                return false;
+            } else {
+                //偵測賓果按鈕輸入的數字是否重複或超出範圍
+                //按下確認鍵或是(鍵盤事件不為null,鍵盤事件為按下,按下鍵為ENTER)
+                if (i == EditorInfo.IME_ACTION_DONE ||
+                        (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                                keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    int iNewNum = 0;
+                    int iButtonNum = 0;
+                    String enteredText = textView.getText().toString();
+                    if (!TextUtils.isEmpty(enteredText)) {
+                        iNewNum = Integer.parseInt(enteredText);
+                        if (iNewNum != 0) {
+                            if (iNewNum >= m_iRangeMin && iNewNum <= m_iRangeMax) {
+                                for (int j = 0; j < m_alBingoButton.size(); j++) {
+                                    iButtonNum = m_alBingoButton.get(j).getButtonNum();
+                                    if (iNewNum == iButtonNum) {
+                                        //textView.setText(m_strPreNum);
+                                        textView.setText("");
+                                        toastMsg(R.string.numberExists);
+                                        hideKeyboard(MainActivity.this, vBinding);
+                                        return true;
+                                    }
+                                }
+                                m_alBingoButton.get((Integer) textView.getTag()).setButtonNum(iNewNum);
+                                m_alBingoButton.get((Integer) textView.getTag()).getEditTextButton().setText(iNewNum + "");
+                            } else {
+                                //textView.setText(m_strPreNum);
+                                textView.setText("");
+                                toastMsg(R.string.outOfRange);
+                            }
+                        } else {
+                            //textView.setText(m_strPreNum);
+                            textView.setText("");
+                            toastMsg(R.string.zeroNum);
+                        }
+                    } else {
+                        //textView.setText(m_strPreNum);
+                        textView.setText("");
+                        toastMsg(R.string.inputEmpty);
+                    }
+                    hideKeyboard(MainActivity.this, vBinding);
+                    return true;
+                }
             }
-        });
+            return false;
+        }
+    };
 
-        //產生亂數
-        m_binding.btnRandom.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View view) {
+    private final View.OnClickListener onClickListener = new View.OnClickListener() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onClick(View view) {
+            int viewId = view.getId();
+            if (viewId == m_binding.btnRandom.getId()) {
                 hideKeyboard(MainActivity.this, vBinding);
-                ArrayList<Integer> alRandomNumbers = new ArrayList<>();//set
+                ArrayList<Integer> alRandomNumbers = new ArrayList<>();
                 int iRandomNumber = 0;
                 if (checkNumRange()) {
                     for (int i = 0; i < m_alBingoButton.size(); i++) {
@@ -171,13 +247,7 @@ public class MainActivity extends AppCompatActivity {
                         m_alBingoButton.get(i).setButtonNum(iRandomNumber);
                     }
                 }
-            }
-        });
-
-        //改變賓果的行列數量，加入按鈕及相關設定
-        m_binding.ivRowsCheck.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            } else if (viewId == m_binding.ivRowsCheck.getId()) {
                 if (!TextUtils.isEmpty(m_binding.etRowRange.getText())) {
                     int enteredNum = Integer.parseInt(m_binding.etRowRange.getText().toString());
                     if (enteredNum != 0) {
@@ -202,8 +272,6 @@ public class MainActivity extends AppCompatActivity {
                                     etButton.setId(i * m_iRows + j);
                                     etButton.setTextSize(25);
                                     etButton.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                    etButton.setOnClickListener(bingoOnClickListener);
-                                    etButton.setOnEditorActionListener(bingoTextChangeListener);
                                     etButton.setGravity(Gravity.CENTER);
                                     etButton.setSingleLine();
                                     etButton.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -212,15 +280,15 @@ public class MainActivity extends AppCompatActivity {
                                     etButton.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
                                     etButton.getLayoutParams().width = (m_binding.bingoTable.getWidth() / m_iRows);
                                     etButton.getLayoutParams().height = (m_binding.bingoTable.getHeight() / m_iRows);
-
-                                    //在輸入新數字前先記下舊的數字，以便復原
+                                    etButton.setOnClickListener(onClickListener);
+                                    etButton.setOnEditorActionListener(etActionListener);
                                     etButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                                         @Override
                                         public void onFocusChange(View v, boolean hasFocus) {
+                                            //在輸入新數字前先記下舊的數字，以便復原
                                             if (!hasFocus) {
-                                                etButton.setCursorVisible(false);
-                                            } else {
                                                 m_strPreNum = etButton.getText() + "";
+                                            } else {
                                                 etButton.setCursorVisible(true);
                                             }
                                         }
@@ -235,105 +303,31 @@ public class MainActivity extends AppCompatActivity {
                         toastMsg(R.string.zeroNum);
                     }
                 } else {
+                    Log.d("1", "239");
                     toastMsg(R.string.inputEmpty);
                 }
                 hideKeyboard(MainActivity.this, vBinding);
-
-            }
-        });
-
-        //radioGroup換顏色
-        m_binding.rgChangeColor.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == R.id.rbtnRed) {
-                    m_iColor = getResources().getColor(R.color.red);
-                } else if (i == R.id.rbtnOrange) {
-                    m_iColor = getResources().getColor(R.color.orange);
-                } else if (i == R.id.rbtnGreen) {
-                    m_iColor = getResources().getColor(R.color.green);
-                } else if (i == R.id.rbtnPurple) {
-                    m_iColor = getResources().getColor(R.color.purple_500);
-                }
-                for (int j = 0; j < m_alBingoButton.size(); j++) {
-                    m_alBingoButton.get(j).setButtonClicked(false);
-                    m_alBingoButton.get(j).getEditTextButton().setBackgroundColor(m_iColor);
-                }
-            }
-        });
-    }
-
-    //偵測賓果按鈕輸入的數字是否重複或超出範圍
-    private EditText.OnEditorActionListener bingoTextChangeListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView etButton, int i, KeyEvent keyEvent) {
-            //按下確認鍵或是(鍵盤事件不為null,鍵盤事件為按下,按下鍵為ENTER)
-            if (i == EditorInfo.IME_ACTION_DONE ||
-                    (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                            keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                int iNewNum = 0;
-                int iButtonNum = 0;
-                String enteredText = etButton.getText().toString();
-                /*if (enteredText.charAt(0) == '0') {
-                    enteredText = enteredText.substring(1);
-                }*/
-                if (!TextUtils.isEmpty(enteredText)) {
-                    iNewNum = Integer.parseInt(enteredText);
-                    if (iNewNum == 0) {
-                        for (int j = 0; j < m_alBingoButton.size(); j++) {
-                            iButtonNum = m_alBingoButton.get(j).getButtonNum();
-                            if (iNewNum == iButtonNum ||
-                                    iNewNum < m_iRangeMin ||
-                                    iNewNum > m_iRangeMax) {
-                                etButton.setText(m_strPreNum);
-                                toastMsg(R.string.numberExists);
-                            }
-                        }
-                        m_alBingoButton.get((Integer) etButton.getTag()).setButtonNum(iNewNum);
+            } else {
+                //賓果按鈕點擊事件(換顏色,確認賓果)
+                if (m_iMode == 0) {
+                    if (!m_alBingoButton.get((Integer) view.getTag()).getButtonClicked()) {
+                        m_alBingoButton.get((Integer) view.getTag()).setButtonClicked(true);
+                        int red = Color.red(m_iColor);
+                        int green = Color.green(m_iColor);
+                        int blue = Color.blue(m_iColor);
+                        view.setBackgroundColor(Color.rgb(Math.max(0, red - 30),
+                                Math.max(0, green - 30),
+                                Math.max(0, blue - 30)));
+                        checkBingoLine();
                     } else {
-                        etButton.setText(m_strPreNum);
-                        toastMsg(R.string.zeroNum);
+                        m_alBingoButton.get((Integer) view.getTag()).setButtonClicked(false);
+                        view.setBackgroundColor(m_iColor);
+                        checkBingoLine();
                     }
-                } else {
-                    etButton.setText(m_strPreNum);
-                    toastMsg(R.string.inputEmpty);
-                }
-                hideKeyboard(MainActivity.this, vBinding);
-                return true;
-            }
-            return false;
-        }
-    };
-
-    //賓果按鈕點擊事件(換顏色,確認賓果)
-    private EditText.OnClickListener bingoOnClickListener = new EditText.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            /*
-            listener寫一起的話，用以下的寫法來判斷是監聽到誰
-            if (view.getId() == m_binding.etNumRange.getId()) {
-
-            }
-            */
-            if (m_iMode == 0) {
-                if (!m_alBingoButton.get((Integer) view.getTag()).getButtonClicked()) {
-                    m_alBingoButton.get((Integer) view.getTag()).setButtonClicked(true);
-                    int red = Color.red(m_iColor);
-                    int green = Color.green(m_iColor);
-                    int blue = Color.blue(m_iColor);
-                    view.setBackgroundColor(Color.rgb(Math.max(0, red - 30),
-                            Math.max(0, green - 30),
-                            Math.max(0, blue - 30)));
-                    checkBingoLine();
-                } else {
-                    m_alBingoButton.get((Integer) view.getTag()).setButtonClicked(false);
-                    view.setBackgroundColor(m_iColor);
-                    checkBingoLine();
                 }
             }
         }
     };
-
 
     @SuppressLint("SetTextI18n")
     public void checkBingoLine() {
@@ -366,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             boolean bIsBingo = true;
             for (int j = 0; j < m_iRows; j++) {
                 boolean bIsClicked = m_alBingoButton.get(j * m_iRows + i).getButtonClicked();
-                if (bIsClicked != true) {
+                if (!bIsClicked) {
                     bIsBingo = false;
                     break;
                 }
@@ -385,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
         boolean bIsBingo = true;
         for (int i = 0; i < m_iRows; i++) {
             boolean bIsClicked = m_alBingoButton.get(i * m_iRows + i).getButtonClicked();
-            if (bIsClicked != true) {
+            if (!bIsClicked) {
                 bIsBingo = false;
                 break;
             }
@@ -401,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
         bIsBingo = true;
         for (int i = 0; i < m_iRows; i++) {
             boolean bIsClicked = m_alBingoButton.get(i * m_iRows + (m_iRows - 1 - i)).getButtonClicked();
-            if (bIsClicked != true) {
+            if (!bIsClicked) {
                 bIsBingo = false;
                 break;
             }
@@ -441,16 +435,16 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void modeSettings() {
         if (m_iMode == 1) {
-            m_iBingoLines=0;
+            m_iBingoLines = 0;
             m_binding.tvBingoLines.setText(getResources()
                     .getString(R.string.bingoLines) + m_iBingoLines);
             m_binding.etNumRange.setEnabled(true);
             m_binding.etRowRange.setEnabled(true);
             m_binding.btnRandom.setClickable(true);
             m_binding.ivRowsCheck.setClickable(true);
-            /*for (int i = 0; i < m_binding.rgChangeColor.getChildCount(); i++) {
+            for (int i = 0; i < m_binding.rgChangeColor.getChildCount(); i++) {
                 m_binding.rgChangeColor.getChildAt(i).setEnabled(true);
-            }*/
+            }
             for (int i = 0; i < m_alBingoButton.size(); i++) {
                 EditText etButton = m_alBingoButton.get(i).getEditTextButton();
                 etButton.setLongClickable(true);
@@ -462,14 +456,23 @@ public class MainActivity extends AppCompatActivity {
                 m_alBingoButton.get(i).setButtonClicked(false);
             }
         } else {
+            //判斷格子是否都有數字
+            for (int i = 0; i < m_alBingoButton.size(); i++) {
+                String iButtonNum = m_alBingoButton.get(i).getEditTextButton().getText() + "";
+                if (TextUtils.isEmpty(iButtonNum) || m_alBingoButton.isEmpty()) {
+                    toastMsg(R.string.bingoNotCompleted);
+                    m_binding.switchMode.setChecked(true);
+                    return;
+                }
+            }
             m_binding.etNumRange.setEnabled(false);
             m_binding.etRowRange.setEnabled(false);
             m_binding.btnRandom.setClickable(false);
             m_binding.ivRowsCheck.setClickable(false);
-            m_binding.rgChangeColor.setEnabled(false);
-            /*for (int i = 0; i < m_binding.rgChangeColor.getChildCount(); i++) {
-                m_binding.rgChangeColor.getChildAt(i).setEnabled(true);
-            }*/
+            //m_binding.rgChangeColor.setEnabled(false);
+            for (int i = 0; i < m_binding.rgChangeColor.getChildCount(); i++) {
+                m_binding.rgChangeColor.getChildAt(i).setEnabled(false);
+            }
             for (int i = 0; i < m_alBingoButton.size(); i++) {
                 EditText etButton = m_alBingoButton.get(i).getEditTextButton();
                 etButton.setLongClickable(false);

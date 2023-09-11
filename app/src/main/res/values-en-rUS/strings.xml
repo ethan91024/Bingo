@@ -13,4 +13,7 @@
     <string name="inputEmpty">Input empty!</string>
     <string name="zeroNum">Cannot input 0!</string>
     <string name="bingoLines">Bingo Lines:</string>
+    <string name="outOfRange">Out Of Range!</string>
+    <string name="bingoNotCompleted">Imcomplete Bingo Card!</string>
+
 </resources>

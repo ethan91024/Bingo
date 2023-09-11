@@ -14,5 +14,8 @@
     <string name="inputEmpty">輸入為空</string>
     <string name="zeroNum">不可為0!</string>
     <string name="bingoLines">目前連線數：</string>
+    <string name="outOfRange">超出範圍！</string>
+    <string name="bingoNotCompleted">賓果盤不完整!</string>
+
 
 </resources>
