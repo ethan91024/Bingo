@@ -17,7 +17,12 @@
     <string name="bingoNotCompleted">Imcomplete Bingo Card!</string>
     <string name="dialogTitle1">Bingo Completed!</string>
     <string name="dialogTitle2">Switch to Input Mode</string>
-    <string name="dialogContent2">Bingo will be recreated after being confirmed!</string>
+    <string name="dialogTitle3">How to Play：</string>
+    <string name="dialogContent2">Bingo will be recovered after being confirmed!</string>
+    <string name="dialogContent3">Enter the row count to create a bingo card.
+        Switch to game mode after filling in the numbers to begin playing.
+        The game ends when the lines match the row count.</string>
+    <string name="dialogUnderstand">Got it!</string>
     <string name="dialogConfirm">Confirm</string>
     <string name="dialogCancel">Cancel</string>
 

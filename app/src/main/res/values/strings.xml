@@ -16,11 +16,15 @@
     <string name="bingoLines">目前連線數：</string>
     <string name="outOfRange">超出範圍！</string>
     <string name="bingoNotCompleted">賓果盤不完整！</string>
-    <string name="dialogTitle1">完成Bingo!</string>
-    <string name="dialogTitle2">切換至輸入模式</string>
+    <string name="dialogTitle1">完成Bingo!</string>//bingo結束時
+    <string name="dialogTitle2">切換至輸入模式</string>//切換到輸入模式時
+    <string name="dialogTitle3">遊戲介紹：</string>//app開啟時
     <string name="dialogContent2">確定後Bingo將被復原！</string>
+    <string name="dialogContent3">輸入行數生成賓果圖，填完數字後可以切換模式開始遊玩，當連線數與賓果圖的行數一樣多時遊戲就結束</string>
     <string name="dialogConfirm">確定</string>
+    <string name="dialogUnderstand">了解！</string>
     <string name="dialogCancel">取消</string>
+    
 
 
 </resources>
