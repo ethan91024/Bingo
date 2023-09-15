@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private View m_vBinding = null;
     private final Random m_rRandom = new Random();
     private ArrayList<BingoButton> m_alBingoButton = new ArrayList<>();
-    //private boolean m_bShouldContinue = true;
     private int m_iBingoLines = 0;
     private int m_iRows = 0;
     private int m_iColor = 0;
@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
     private final CompoundButton.OnCheckedChangeListener m_compoundBtnCheckedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            //if (m_bShouldContinue) {
+            LinearLayout llRootView = m_binding.llRootView;
+            llRootView.clearFocus();
             if (m_binding.switchMode.isChecked()) {
                 //變為輸入模式
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -116,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 modeSettings();
             }
         }
-        //m_bShouldContinue=true;
-        //}
     };
 
     //賓果盤換顏色的checkedListener
@@ -134,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (checkedId == R.id.rbtnPurple) {
                 m_iColor = getResources().getColor(R.color.purple_500);
             }
+            LinearLayout llRootView = m_binding.llRootView;
+            llRootView.clearFocus();
             for (int j = 0; j < m_alBingoButton.size(); j++) {
                 m_alBingoButton.get(j).setButtonClicked(false);
                 m_alBingoButton.get(j).getEditTextButton().getBackground().setColorFilter(m_iColor, PorterDuff.Mode.SRC_IN);
