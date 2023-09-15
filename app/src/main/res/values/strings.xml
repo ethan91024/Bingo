@@ -16,6 +16,7 @@
     <string name="bingoLines">目前連線數：</string>
     <string name="outOfRange">超出範圍！</string>
     <string name="bingoNotCompleted">賓果盤不完整！</string>
+    <string name="bingoNotCreated">賓果盤不存在！</string>
     <string name="dialogTitle1">完成Bingo!</string>//bingo結束時
     <string name="dialogTitle2">切換至輸入模式</string>//切換到輸入模式時
     <string name="dialogTitle3">遊戲介紹：</string>//app開啟時
