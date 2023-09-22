@@ -1,6 +1,5 @@
 package com.softmobile.Bingo.ui;
 
-import android.widget.Button;
 import android.widget.EditText;
 
 public class BingoButton {

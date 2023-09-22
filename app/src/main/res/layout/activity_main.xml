@@ -188,18 +188,13 @@
             android:text="@string/bingoLines" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="382dp"
         android:layout_height="382dp"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/bingoRelativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            android:gravity="center" />
-    </LinearLayout>
+        android:layout_marginTop="16dp"
+        android:scrollbars="none"
+        android:nestedScrollingEnabled="false"
+        android:orientation="horizontal" />
 
 </LinearLayout>

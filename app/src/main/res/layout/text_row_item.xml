@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text=""
+        android:textSize="25sp"
+        android:inputType="number"
+        android:gravity="center"
+        android:singleLine="true"
+        android:focusableInTouchMode="true"
+        android:imeOptions="actionDone"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_purple"
+        android:maxLength="2"
+        />
+
+    <!-- 其他视图元素 -->
+
+</LinearLayout>
