@@ -2,25 +2,15 @@ package com.softmobile.Bingo.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
+import android.os.Handler;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,7 +19,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +30,13 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-    private int m_iColor = 0;
+    private Handler handler = new Handler();
+
+    private int m_iColor = R.drawable.button_purple;
+    private static final int PURPLE_STYLE = R.drawable.button_purple;
+    private static final int GREEN_STYLE = R.drawable.button_green;
+    private static final int ORANGE_STYLE = R.drawable.button_orange;
+    private static final int RED_STYLE = R.drawable.button_red;
     private ActivityMainBinding m_binding = null;
     private View m_vBinding = null;
     private final Random m_rRandom = new Random();
@@ -65,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         m_vBinding = m_binding.getRoot();
         setContentView(m_vBinding);
 
-        m_iColor = getResources().getColor(R.color.purple);
         m_binding.tvBingoLines.setText(getResources()
                 .getString(R.string.bingoLines) + "0");
         gameInstruction();
@@ -116,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 builder.create().show();
             } else if (!m_binding.switchMode.isChecked()) {
                 //變為遊戲模式
-
-                modeSettings(GAME_MODE);
-                m_bingoAdapter.updateMode(m_iMode);
+                if (modeSettings(GAME_MODE)) {
+                    m_bingoAdapter.updateMode(m_iMode);
+                }
             }
         }
     };
@@ -131,25 +125,25 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout llRootView = m_binding.llRootView;
             llRootView.clearFocus();
             EditText etButton = null;
+            if (checkedId == R.id.rbtnPurple) {
+                m_iColor = PURPLE_STYLE;
+            } else if (checkedId == R.id.rbtnRed) {
+                m_iColor = RED_STYLE;
+            } else if (checkedId == R.id.rbtnOrange) {
+                m_iColor = ORANGE_STYLE;
+            } else if (checkedId == R.id.rbtnGreen) {
+                m_iColor = GREEN_STYLE;
+            }
             for (int j = 0; j < m_alBingoButton.size(); j++) {
                 etButton = m_alBingoButton.get(j).getEditTextButton();
                 m_alBingoButton.get(j).setButtonClicked(false);
-                if (checkedId == R.id.rbtnPurple) {
-                    etButton.setBackgroundResource(R.drawable.button_purple);
-                } else if (checkedId == R.id.rbtnRed) {
-                    etButton.setBackgroundResource(R.drawable.button_red);
-                } else if (checkedId == R.id.rbtnOrange) {
-                    etButton.setBackgroundResource(R.drawable.button_orange);
-                } else if (checkedId == R.id.rbtnGreen) {
-                    etButton.setBackgroundResource(R.drawable.button_green);
-                }
+                etButton.setBackgroundResource(m_iColor);
             }
             m_bingoAdapter.updateBingoButton(m_alBingoButton);
         }
     };
 
-    //!!!!賓果按鈕判斷時機
-    //範圍、行數及賓果按鈕的editText Listener
+    //範圍、行數按鈕的editText ActionListener
     public EditText.OnEditorActionListener m_etActionListener = new TextView.OnEditorActionListener() {
         @SuppressLint("SetTextI18n")
         @Override
@@ -193,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //亂數按鈕、打勾圖案及賓果按鈕點擊的Listener
+    //亂數按鈕、打勾圖案ClickListener
     public View.OnClickListener m_onClickListener = new View.OnClickListener() {
         @SuppressLint("SetTextI18n")
         @Override
@@ -245,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //數字範圍editText的focus消失時判斷格式是否正確
     public View.OnFocusChangeListener m_onFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
@@ -260,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //產生賓果盤
+    //透過Adapter產生賓果盤
     @SuppressLint({"UseCompatLoadingForDrawables", "ClickableViewAccessibility"})
     public void createBingo() {
         m_recyclerView = findViewById(R.id.recyclerView);
@@ -270,15 +265,15 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        m_bingoAdapter = new BingoAdapter(m_iRows, m_recyclerView,
+        m_bingoAdapter = new BingoAdapter(m_iRows, m_iColor, m_recyclerView,
                 m_alBingoButton, this, m_binding, m_vBinding);
         m_recyclerView.setAdapter(m_bingoAdapter);
     }
 
     //切換模式後的設定
     @SuppressLint({"SetTextI18n", "ResourceAsColor"})
-    public void modeSettings(int j) {
-        if (j == 1) {
+    public boolean modeSettings(int mode) {
+        if (mode == INPUT_MODE) {
             m_binding.tvBingoLines.setText(getResources()
                     .getString(R.string.bingoLines) + "0");
             m_binding.etNumRange.setEnabled(true);
@@ -309,22 +304,24 @@ public class MainActivity extends AppCompatActivity {
             if (m_alBingoButton.size() == 0) {
                 toastMsg(R.string.bingoNotCreated);
                 m_binding.switchMode.setChecked(true);
-                return;
+                return false;
             }
             for (int i = 0; i < m_alBingoButton.size(); i++) {
                 iButtonNum = m_alBingoButton.get(i).getButtonNum();
                 if (iButtonNum == 0) {
                     toastMsg(R.string.bingoNotCompleted);
                     m_binding.switchMode.setChecked(true);
-                    return;
-                } else if (TextUtils.isEmpty(m_binding.etNumRange.getText())) {
+                    return false;
+                }
+                if (TextUtils.isEmpty(m_binding.etNumRange.getText())) {
                     toastMsg(R.string.inputNumError);
                     m_binding.switchMode.setChecked(true);
-                    return;
-                } else if (iButtonNum < m_iRangeMin || iButtonNum > m_iRangeMax) {
+                    return false;
+                }
+                if (iButtonNum < m_iRangeMin || iButtonNum > m_iRangeMax) {
                     toastMsg(R.string.outOfRange);
                     m_binding.switchMode.setChecked(true);
-                    return;
+                    return false;
                 }
             }
             m_binding.etNumRange.setEnabled(false);
@@ -345,6 +342,7 @@ public class MainActivity extends AppCompatActivity {
             hideKeyboard(this, m_vBinding);
             m_iMode = GAME_MODE;
         }
+        return true;
     }
 
     //檢查範圍輸入的格式並存取最小最大值

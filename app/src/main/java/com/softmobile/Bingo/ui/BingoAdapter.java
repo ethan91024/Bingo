@@ -30,9 +30,12 @@ import java.util.ArrayList;
 
 public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHolder> {
 
+    private int m_iColor = 0;
     private int m_iBingoLines = 0;
     private int m_iRows = 0;
-    private int m_iMode = 1;
+    private int m_iMode = INPUT_MODE;
+    private static final int GAME_MODE = 0;
+    private static final int INPUT_MODE = 1;
     private int m_iRangeMin = 0;
     private int m_iRangeMax = 0;
     private int m_etButtonWidth;
@@ -43,9 +46,11 @@ public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHol
     private ArrayList<BingoButton> m_alBingoButton = new ArrayList<>();
     private RecyclerView.LayoutParams m_layoutParams;
 
-    public BingoAdapter(int rows, RecyclerView recyclerView, ArrayList<BingoButton> m_alBingoButton,
+    //建構
+    public BingoAdapter(int rows, int m_iColor, RecyclerView recyclerView, ArrayList<BingoButton> m_alBingoButton,
                         Activity mainActivity, ActivityMainBinding m_binding, View m_vBinding) {
         this.m_iRows = rows;
+        this.m_iColor = m_iColor;
         this.mainActivity = mainActivity;
         this.m_vBinding = m_vBinding;
         this.m_etButtonWidth = recyclerView.getWidth() / m_iRows;
@@ -59,24 +64,26 @@ public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHol
     @NonNull
     @Override
     public BingoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //建立ViewHolder，並動態調整賓果按鈕的長寬
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.text_row_item, parent, false);
+        View view = inflater.inflate(R.layout.bingo_cell_text, parent, false);
         view.setLayoutParams(m_layoutParams);
         return new BingoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BingoViewHolder holder, int position) {
+        //根據位置將etButton跟ViewHolder綁定在一起
         holder.etButton.setText("");
         BingoButton bingoButton = new BingoButton(holder.etButton, position);
         m_alBingoButton.add(bingoButton);
         holder.etButton.setOnClickListener(m_onClickListener);
         holder.etButton.setOnEditorActionListener(m_onEditorActionListener);
+
         holder.etButton.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -88,7 +95,6 @@ public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHol
 
             @Override
             public void afterTextChanged(Editable editable) {
-                TextWatcher textWatcher = this;
                 m_runnable = new Runnable() {
                     @Override
                     public void run() {
@@ -96,11 +102,9 @@ public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHol
                             if (checkBingoButtonNum(holder.etButton, Integer.parseInt(String.valueOf(editable)))) {
                                 m_alBingoButton.get((Integer) holder.etButton.getTag()).setButtonNum(Integer.parseInt(editable + ""));
                             } else {
-                                holder.etButton.removeTextChangedListener(textWatcher);
                                 holder.etButton.setText("");
                                 m_alBingoButton.get((Integer) holder.etButton.getTag()).setButtonNum(0);
-                                holder.etButton.addTextChangedListener(textWatcher);
-                                hideKeyboard(mainActivity,m_vBinding);
+                                hideKeyboard(mainActivity, m_vBinding);
                             }
                         } else {
                             m_alBingoButton.get((Integer) holder.etButton.getTag()).setButtonNum(0);
@@ -111,21 +115,28 @@ public class BingoAdapter extends RecyclerView.Adapter<BingoAdapter.BingoViewHol
             }
         });
     }
-private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.OnEditorActionListener() {
-    @Override
-    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        if (i == EditorInfo.IME_ACTION_DONE ||
-                (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-            hideKeyboard(mainActivity,m_vBinding);
+
+    private Handler m_handler = new Handler(Looper.getMainLooper());
+    private Runnable m_runnable = null;
+
+    //讓賓果輸入數字時可以按Enter鍵退下鍵盤
+    private TextView.OnEditorActionListener m_onEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if (i == EditorInfo.IME_ACTION_DONE ||
+                    (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                            keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                hideKeyboard(mainActivity, m_vBinding);
+            }
+            return false;
         }
-        return false;
-    }
-};
+    };
+
+    //賓果按鈕的點擊事件，會透過切換Activated狀態在selector中變顏色
     private View.OnClickListener m_onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (m_iMode == 0) {
+            if (m_iMode == GAME_MODE) {
                 if (view.isActivated()) {
                     view.setActivated(false);
                 } else {
@@ -142,9 +153,6 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
         }
     };
 
-    private Handler m_handler = new Handler(Looper.getMainLooper());
-    private Runnable m_runnable = null;
-
     @Override
     public int getItemCount() {
         return m_iRows * m_iRows;
@@ -153,15 +161,17 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
     public class BingoViewHolder extends RecyclerView.ViewHolder {
         EditText etButton;
 
+        //設定賓果按鈕的屬性及Drawable
         public BingoViewHolder(@NonNull View itemView) {
             super(itemView);
             etButton = itemView.findViewById(R.id.etButton);
+            etButton.setBackgroundResource(m_iColor);
         }
     }
 
+    //檢查賓果的數字是否為空、為0、超出範圍、重複
     @SuppressLint("SetTextI18n")
     public boolean checkBingoButtonNum(TextView textView, int iNewNum) {
-        //int iNewNum = 0;
         int iButtonNum = 0;
         int iButtonIndex = (int) textView.getTag();
         if (!TextUtils.isEmpty(iNewNum + "")) {
@@ -195,7 +205,7 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
     @SuppressLint("SetTextI18n")
     public void checkBingoLine() {
         m_binding.tvBingoLines.setText(mainActivity.getResources()
-                .getString(R.string.bingoLines) + " " + m_iBingoLines);
+                .getString(R.string.bingoLines) + m_iBingoLines);
         //紀錄是否被點擊
         boolean bIsClickedHorizontal = true;//橫排
         boolean bIsClickedVertical = true;//直排
@@ -216,7 +226,7 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
             for (int j = 0; j < m_iRows; j++) {
                 bIsClickedHorizontal = m_alBingoButton.get(i * m_iRows + j).getButtonClicked();
                 bIsClickedVertical = m_alBingoButton.get(j * m_iRows + i).getButtonClicked();
-                //有一個沒被點擊就會設為無連線並跳出迴圈
+                //有一個沒被點擊就會設為無連線
                 if (!bIsClickedHorizontal) {
                     bIsLineHorizontal = false;
                 }
@@ -224,7 +234,8 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
                     bIsLineVertical = false;
                 }
             }
-            if (bIsLineHorizontal) {//都按過就會增加連線數
+            if (bIsLineHorizontal) {
+                //都按過就會增加連線數
                 if (addBingoLines()) {
                     //回傳true就代表遊戲結束並break
                     break;
@@ -264,7 +275,7 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
     public boolean addBingoLines() {
         m_iBingoLines++;
         m_binding.tvBingoLines.setText(mainActivity.getResources()
-                .getString(R.string.bingoLines) + " " + m_iBingoLines);
+                .getString(R.string.bingoLines) + m_iBingoLines);
         if (checkGameOver()) {
             return true;
         }
@@ -276,7 +287,7 @@ private TextView.OnEditorActionListener m_onEditorActionListener=new TextView.On
         if (m_iBingoLines >= m_iRows) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
             builder.setTitle(R.string.dialogTitle1);
-            builder.setCancelable(false);
+            builder.setCancelable(false);//設定不能點擊對話框以外的地方
             builder.setPositiveButton(R.string.dialogConfirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
